@@ -58,28 +58,36 @@ bot.on('callback_query', (query) => {
         bot.sendMessage(chatId, 'Введите ваше имя:').then(() => {
             bot.once('message', (msg) => {
                 userData.name = msg.text; // Сохраняем имя
-
-                // После ввода имени запрашиваем город
-                bot.sendMessage(chatId, 'Введите ваш город:').then(() => {
+    
+                // После ввода имени запрашиваем номер телефона
+                bot.sendMessage(chatId, 'Введите ваш номер телефона:').then(() => {
                     bot.once('message', (msg) => {
-                        userData.city = msg.text; // Сохраняем город
-
-                        // После ввода города запрашиваем статус с выбором кнопок
-                        bot.sendMessage(chatId, 'Выберите ваш статус:', {
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [{ text: 'Мастер', callback_data: 'status_master' }],
-                                    [{ text: 'Магазин', callback_data: 'status_store' }],
-                                    [{ text: 'Владелец студии', callback_data: 'status_owner' }],
-                                    [{ text: 'Другое', callback_data: 'status_other' }]
-                                ]
-                            }
+                        userData.phone = msg.text; // Сохраняем номер телефона
+    
+                        // После ввода телефона запрашиваем город
+                        bot.sendMessage(chatId, 'Введите ваш город:').then(() => {
+                            bot.once('message', (msg) => {
+                                userData.city = msg.text; // Сохраняем город
+    
+                                // После ввода города запрашиваем статус с выбором кнопок
+                                bot.sendMessage(chatId, 'Выберите ваш статус:', {
+                                    reply_markup: {
+                                        inline_keyboard: [
+                                            [{ text: 'Мастер', callback_data: 'status_master' }],
+                                            [{ text: 'Магазин', callback_data: 'status_store' }],
+                                            [{ text: 'Владелец студии', callback_data: 'status_owner' }],
+                                            [{ text: 'Другое', callback_data: 'status_other' }]
+                                        ]
+                                    }
+                                });
+                            });
                         });
                     });
                 });
             });
         });
     }
+    
 
     // Обработка выбора статуса
     if (query.data === 'status_master' || query.data === 'status_store' || query.data === 'status_owner') {
@@ -105,6 +113,7 @@ bot.on('callback_query', (query) => {
                 const messageToAdmin = `
                 Пользователь заполнил следующие данные:
                 Имя: ${userData.name}
+                Иелефон: ${userData.phone}
                 Город: ${userData.city}
                 Статус: ${userData.status}
                 `;
