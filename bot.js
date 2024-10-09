@@ -9,7 +9,11 @@ const adminChatId = 6376419421;
 
 // Приветственное сообщение
 const welcomeMessage = `
-📹 Привет! Мы команда 4Hair! Приятно познакомиться, а теперь расскажи немного о себе.
+📹 Привет! 
+
+Мы команда бренда 4Hair!
+
+Приятно познакомиться, а теперь расскажи немного о себе 😊
 `;
 
 // Храним данные пользователей
@@ -25,24 +29,20 @@ bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
     userStates[chatId] = { userData: {} }; // Создаём объект для хранения данных пользователя
 
-    // Сначала отправляем приветственное сообщение
-    bot.sendMessage(chatId, welcomeMessage).then(() => {
-        // Затем отправляем видео
-        bot.sendVideo(chatId, 'https://videos2.sendvid.com/bd/cd/8swcjf60.mp4?validfrom=1728307302&validto=1728321702&rate=180k&ip=18.185.69.117&hash=9RBrnTHkLifnULgn%2Fl3%2FfdOIeaM%3D', {
-            caption: welcomeMessage,
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Продолжить', callback_data: 'continue_name' }]
-                ]
-            },
-            width: 720,   
-            height: 1280  
-        }).catch((error) => {
-            console.error('Ошибка при отправке видео:', error);
-            bot.sendMessage(chatId, 'К сожалению, не удалось отправить видео. Пожалуйста, проверьте доступность файла.');
-        });
-    });
+    // Отправляем видео
+    bot.sendVideo(chatId, 'https://videos2.sendvid.com/bd/cd/8swcjf60.mp4?validfrom=1728307302&validto=1728321702&rate=180k&ip=18.185.69.117&hash=9RBrnTHkLifnULgn%2Fl3%2FfdOIeaM%3D', {
+        caption: welcomeMessage,
+        reply_markup: {
+            inline_keyboard: [
+                [{ text: 'Продолжить', callback_data: 'continue_name' }]
+            ]
+        },
+        width: 720,
+        height: 1280
+    })
+
 });
+
 
 
 // Обработка всех колбэков
@@ -55,17 +55,17 @@ bot.on('callback_query', (query) => {
 
     // Если нажата кнопка "Продолжить"
     if (query.data === 'continue_name') {
-        bot.sendMessage(chatId, 'Введите ваше имя:').then(() => {
+        bot.sendMessage(chatId, 'Как тебя зовут?').then(() => {
             bot.once('message', (msg) => {
                 userData.name = msg.text; // Сохраняем имя
     
                 // После ввода имени запрашиваем номер телефона
-                bot.sendMessage(chatId, 'Введите ваш номер телефона:').then(() => {
+                bot.sendMessage(chatId, 'Напиши свой номер телефона').then(() => {
                     bot.once('message', (msg) => {
                         userData.phone = msg.text; // Сохраняем номер телефона
     
                         // После ввода телефона запрашиваем город
-                        bot.sendMessage(chatId, 'Введите ваш город:').then(() => {
+                        bot.sendMessage(chatId, 'Из какого ты города?').then(() => {
                             bot.once('message', (msg) => {
                                 userData.city = msg.text; // Сохраняем город
     
@@ -99,6 +99,7 @@ bot.on('callback_query', (query) => {
         Пользователь заполнил следующие данные:
         Имя: ${userData.name}
         Город: ${userData.city}
+        Телефон: ${userData.phone}
         Статус: ${userData.status}
         `;
         bot.sendMessage(adminChatId, messageToAdmin);
@@ -113,7 +114,7 @@ bot.on('callback_query', (query) => {
                 const messageToAdmin = `
                 Пользователь заполнил следующие данные:
                 Имя: ${userData.name}
-                Иелефон: ${userData.phone}
+                Телефон: ${userData.phone}
                 Город: ${userData.city}
                 Статус: ${userData.status}
                 `;
